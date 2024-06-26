@@ -61,22 +61,18 @@ insert into descobridores (nome) values ('Maryanska'), ('John Bell Hatcher'), ('
 CREATE OR REPLACE FUNCTION verifica_era_dinossauro()
 RETURNS TRIGGER AS $BODY$
 DECLARE
-    era_inicio_duracao INT := 0; -- Variável para armazenar o início da duração da era
-    era_fim_duracao INT := 0;    -- Variável para armazenar o fim da duração da era
+    era_inicio_duracao INT := 0; 
+    era_fim_duracao INT := 0;    
 BEGIN
-    -- Seleciona os limites de duração da era correspondente
     SELECT inicio_duracao, fim_duracao
     INTO era_inicio_duracao, era_fim_duracao
     FROM eras
-    WHERE id = NEW.fk_era;
-
-    -- Verifica se o período informado está dentro dos limites da era
+    WHERE id = NEW.fk_era;    
     IF (NEW.inicio < era_inicio_duracao OR NEW.fim > era_fim_duracao) THEN
         RAISE EXCEPTION 'O período informado (% - %) não está dentro da duração permitida para a era %.', 
                         NEW.inicio, NEW.fim, NEW.fk_era;
     END IF;
-	RAISE NOTICE 'validação bem-sucedida, inserção permitida';
-    -- Se a validação for bem-sucedida, permite a inserção
+				RAISE NOTICE 'validação bem-sucedida, inserção permitida';   
     RETURN NEW;
 END;
 $BODY$ 
